@@ -1,0 +1,31 @@
+name: Build PKForge Mac
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install MAUI Mac Catalyst
+        run: dotnet workload install maui-maccatalyst
+
+      - name: Build PKForge
+        run: bash tools/build-mac.sh
+
+      - name: Upload PKForge
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKForge-Mac
+          path: dist/
